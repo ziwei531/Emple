@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinner_degrees">
+        <item>Bachelor of Computer Science</item>
+        <item>Bachelor of Science In Architecture</item>
+        <item>Bachelor of Business</item>
+    </string-array>
+</resources>

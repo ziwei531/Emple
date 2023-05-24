@@ -10,8 +10,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -63,7 +68,7 @@ public class AddFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        context = requireContext();
+        context = requireContext(); //ensure this is always here. else, no context = many complications
     }
 
     @Override
@@ -71,28 +76,38 @@ public class AddFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add, container, false);
 
-        // Find the button with ID "AddPost"
         Button addPostButton = view.findViewById(R.id.AddPost);
+        TextInputEditText PostTitle = view.findViewById(R.id.PostTitle);
+        EditText PostContent = view.findViewById(R.id.PostContent);
+        Spinner PostDegreeChoice = view.findViewById(R.id.DegreesChoice);
 
         // Set the OnClickListener for the button
         addPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handleAddPost(view);
+                String givenTitle = PostTitle.getText().toString();
+                String givenContent = PostContent.getText().toString();
+                String givenDegreeChoice = PostDegreeChoice.getSelectedItem().toString();
+
+                if (givenTitle.isEmpty() || givenContent.isEmpty()) {
+                    Toast.makeText(requireContext(), "Title or post content cannot be empty.", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    handleAddPost(view, givenTitle, givenContent, givenDegreeChoice);
+                }
             }
         });
 
         return view;
     }
 
-    private void handleAddPost(View view) {
+    private void handleAddPost(View view, String PostTitle, String PostContent, String PostDegreeChoice) {
         Button button = (Button) view;
 
-        // Get the values to insert
-        String sampleTitle = "Sample Title";
-        String sampleContent = "Sample Content";
-        String sampleDegreeCourse = "Sample Degree Course";
-        String sampleDateTime = getCurrentDateTime();
+        //get the datetime it was created once add post is triggered
+        String datetimeNow = getCurrentDateTime();
+
+        Log.d(TAG, "handleAddPost: \n" + "Post Title: " + PostTitle + "Post Content: " + PostContent);
 
         // Insert the values into the database
         DatabaseHelper databaseHelper = new DatabaseHelper(requireContext());
@@ -100,7 +115,7 @@ public class AddFragment extends Fragment {
 
         Log.d(TAG, "DatabaseHelper created successfully.");
         if (db != null) {
-            boolean isInserted = databaseHelper.addOne(sampleTitle, sampleContent, sampleDegreeCourse, sampleDateTime);
+            boolean isInserted = databaseHelper.addOne(PostTitle, PostContent, PostDegreeChoice, datetimeNow);
 
             if (isInserted) {
                 // Insertion successful

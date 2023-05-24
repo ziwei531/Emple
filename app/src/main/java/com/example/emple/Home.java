@@ -36,18 +36,23 @@ public class Home extends AppCompatActivity {
                 switch  (item.getItemId()) {
                     case R.id.navigation_home:
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, homeFragment).commit();
+                        setTitle("Home");
                         return true;
                     case R.id.navigation_add:
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, addFragment).commit();
+                        setTitle("Create a New Post");
                         break;
                     case R.id.navigation_notifications:
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, notificationFragment).commit();
+                        setTitle("Notification Page");
                         return true;
                     case R.id.navigation_search:
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, searchFragment).commit();
+                        setTitle("Search Page");
                         return true;
                     case R.id.navigation_profile:
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, profileFragment).commit();
+                        setTitle("Profile Page");
                         return true;
                 }
                 return false;
