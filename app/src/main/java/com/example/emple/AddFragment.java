@@ -1,12 +1,20 @@
 package com.example.emple;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,7 +22,7 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class AddFragment extends Fragment {
-
+    private static final String TAG = "AddFragment";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -23,6 +31,8 @@ public class AddFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private Context context;
 
     public AddFragment() {
         // Required empty public constructor
@@ -53,12 +63,61 @@ public class AddFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        context = requireContext();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add, container, false);
+        View view = inflater.inflate(R.layout.fragment_add, container, false);
+
+        // Find the button with ID "AddPost"
+        Button addPostButton = view.findViewById(R.id.AddPost);
+
+        // Set the OnClickListener for the button
+        addPostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handleAddPost(view);
+            }
+        });
+
+        return view;
+    }
+
+    private void handleAddPost(View view) {
+        Button button = (Button) view;
+
+        // Get the values to insert
+        String sampleTitle = "Sample Title";
+        String sampleContent = "Sample Content";
+        String sampleDegreeCourse = "Sample Degree Course";
+        String sampleDateTime = getCurrentDateTime();
+
+        // Insert the values into the database
+        DatabaseHelper databaseHelper = new DatabaseHelper(requireContext());
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        Log.d(TAG, "DatabaseHelper created successfully.");
+        if (db != null) {
+            boolean isInserted = databaseHelper.addOne(sampleTitle, sampleContent, sampleDegreeCourse, sampleDateTime);
+
+            if (isInserted) {
+                // Insertion successful
+                Toast.makeText(requireContext(), "Post added successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                // Insertion failed
+                Toast.makeText(requireContext(), "Failed to add post", Toast.LENGTH_SHORT).show();
+            }
+
+            db.close(); // Close the database connection
+        }
+    }
+
+    private String getCurrentDateTime() {
+        // Get current datetime
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date now = new Date();
+        return dateFormat.format(now);
     }
 }

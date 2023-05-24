@@ -39,6 +39,7 @@ public class Home extends AppCompatActivity {
                         return true;
                     case R.id.navigation_add:
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, addFragment).commit();
+                        break;
                     case R.id.navigation_notifications:
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, notificationFragment).commit();
                         return true;
